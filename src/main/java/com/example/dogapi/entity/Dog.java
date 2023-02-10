@@ -1,5 +1,6 @@
 package com.example.dogapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Dog {
 
     private String status;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "dog", cascade = CascadeType.ALL)
     private List<Image> images;
 
