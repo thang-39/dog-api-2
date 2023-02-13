@@ -12,4 +12,18 @@ public interface ImageService {
     byte[] getImageFromFileSystem(String imageName) throws IOException;
 
     List<Image> getImagesFromBreed(String breedName);
+
+    byte[] getRandomImage() throws IOException;
+
+    byte[] getRandomImageFromBreed(String breedName) throws IOException;
+
+    List<Image> getNumOfImagesFromBreed(String breedName, long num);
+
+    List<Image> getImagesFromSubBreed(String breedName, String subBreed);
+
+    byte[] getRandomImageFromSubBreed(String breedName, String subBreed) throws IOException;
+
+    List<Image> getNumOfRandomImagesFromSubBreed(String breedName, String subBreed, long num);
+
+    byte[] getRandomImageFromBreedConcat(String subBreedAndBreed) throws IOException;
 }

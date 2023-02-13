@@ -76,7 +76,6 @@ public class DogServiceImpl implements DogService {
                 subBreedsList.get(breedName).add(dog.getSubBreed());
             }
         }
-
         return subBreedsList;
     }
 

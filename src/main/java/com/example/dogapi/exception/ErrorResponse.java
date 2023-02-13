@@ -1,7 +1,6 @@
 package com.example.dogapi.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,5 +17,11 @@ public class ErrorResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
+
+    public ErrorResponse(List<String> messages) {
+        this.messages = messages;
+        this.timestamp = LocalDateTime.now();
+    }
+
 
 }

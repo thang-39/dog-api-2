@@ -1,6 +1,7 @@
 package com.example.dogapi.service;
 
 import com.example.dogapi.entity.Dog;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Map;
@@ -16,4 +17,6 @@ public interface DogService {
     Map<String, Set<String>> getBreedAndSubBreed();
 
     Map<String, Set<String>> getAllSubBreedsFromBreed(String breedName);
+
+
 }

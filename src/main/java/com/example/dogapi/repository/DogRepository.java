@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface DogRepository extends JpaRepository<Dog,Long> {
     List<Dog> findByBreed(String breedName);
+    List<Dog> findByBreedAndSubBreed(String breed, String subBreed);
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,10 +37,69 @@ public class ImageController {
                 .body(imageData);
     }
 
+    @GetMapping("/get/breeds/image/random")
+    public ResponseEntity<?> getRandomImage() throws IOException {
+        byte[] imageData = imageService.getRandomImage();
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/jpeg"))
+                .body(imageData);
+    }
+
     @GetMapping("/get/breed/{breedName}/images")
     public ResponseEntity<List<Image>> getImagesFromBreed(@PathVariable String breedName) {
         List<Image> images = imageService.getImagesFromBreed(breedName);
         return new ResponseEntity<>(images, HttpStatus.OK);
+    }
+
+    @GetMapping("/get/breed/{breedName}/image/random")
+    public ResponseEntity<?> getRandomImageFromBreed(@PathVariable String breedName) throws IOException {
+        byte[] imageData = imageService.getRandomImageFromBreed(breedName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/jpeg"))
+                .body(imageData);
+    }
+
+    @GetMapping("/get/breed/{breedName}/images/random/{num}")
+    public ResponseEntity<List<Image>> getNumOfRandomImagesFromBreed(@PathVariable String breedName,
+                                                     @PathVariable long num) throws IOException {
+        List<Image> imageList = imageService.getNumOfImagesFromBreed(breedName, num);
+        return new ResponseEntity<>(imageList,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/breed/{breedName}/{subBreed}/images")
+    public ResponseEntity<List<Image>> getAllImagesFromSubBreed(@PathVariable String breedName,
+                                                                @PathVariable String subBreed) {
+//        List<Image> imageList;
+//        if(StringUtils.isEmpty(subBreed) && subBreed.equals(" ")){
+//           imageList = imageService.getImagesFromBreed(breedName);
+//        }
+        List<Image> imageList = imageService.getImagesFromSubBreed(breedName,subBreed);
+        return new ResponseEntity<>(imageList,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/breed/{breedName}/{subBreed}/image/random")
+    public ResponseEntity<?> getRandomImageFromSubBreed(@PathVariable String breedName,
+                                                        @PathVariable String subBreed) throws IOException {
+        byte[] imageData = imageService.getRandomImageFromSubBreed(breedName,subBreed);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/jpeg"))
+                .body(imageData);
+    }
+
+    @GetMapping("/get/breed/{breedName}/{subBreed}/image/random/{num}")
+    public ResponseEntity<List<Image>> getNumOfRandomImagesFromSubBreed(@PathVariable String breedName,
+                                                                        @PathVariable String subBreed,
+                                                                        @PathVariable long num) {
+        List<Image> imageList = imageService.getNumOfRandomImagesFromSubBreed(breedName,subBreed,num);
+        return new ResponseEntity<>(imageList,HttpStatus.OK);
+    }
+
+    @GetMapping("/get/breed/{SubBreedAndBreed}/images/random")
+    public ResponseEntity<?> getRandomImagesFromBreedConcat(@PathVariable String subBreedAndBreed) throws IOException {
+        byte[] imageData = imageService.getRandomImageFromBreedConcat(subBreedAndBreed);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/jpeg"))
+                .body(imageData);
     }
 
 

@@ -14,6 +14,8 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageServiceImpl implements ImageService{
@@ -53,23 +55,112 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public byte[] getImageFromFileSystem(String imageName) throws IOException {
-        Optional<Image> image = imageRepository.findByName(imageName);
-        String filePath = image.get().getFilePath();
-        byte[] imageData = Files.readAllBytes(new File(filePath).toPath());
-        return imageData;
+        Image image = imageRepository.findByName(imageName).get();
+        return getByteDataFromImage(image);
+    }
+
+    @Override
+    public byte[] getRandomImage() throws IOException {
+        Image image = imageRepository.findRandomImage().get();
+        return getByteDataFromImage(image);
     }
 
     @Override
     public List<Image> getImagesFromBreed(String breedName) {
-
-        List<Image> imageList = new ArrayList<>();
-
         List<Dog> dogList = dogRepository.findByBreed(breedName);
+        return getImagesFromDogList(dogList);
+    }
 
+    @Override
+    public byte[] getRandomImageFromBreed(String breedName) throws IOException {
+//        List<Dog> dogList = dogRepository.findByBreed(breedName);
+//
+//        List<List<Image>> listOfImageList = dogList.stream()
+//                .map(Dog::getId)
+//                .map(id -> imageRepository.findAllImageFromDogId(id))
+//                .toList();
+//
+//        List<Image> imageList = new ArrayList<>();
+//
+//        for (List<Image> images : listOfImageList) {
+//            imageList.addAll(images);
+//        }
+
+        List<Image> imageList = getImagesFromBreed(breedName);
+        Image randomImage = getRandomImage(imageList);
+        return getByteDataFromImage(randomImage);
+
+    }
+
+    @Override
+    public List<Image> getNumOfImagesFromBreed(String breedName, long num) {
+        List<Image> imageList = getImagesFromBreed(breedName);
+        return getRandomImages(imageList,num);
+    }
+
+    @Override
+    public List<Image> getImagesFromSubBreed(String breedName, String subBreed) {
+        List<Dog> dogList = dogRepository.findByBreedAndSubBreed(breedName,subBreed);
+        return getImagesFromDogList(dogList);
+    }
+
+    @Override
+    public byte[] getRandomImageFromSubBreed(String breedName, String subBreed) throws IOException {
+        List<Dog> dogList = dogRepository.findByBreedAndSubBreed(breedName,subBreed);
+        List<Image> imageList = getImagesFromDogList(dogList);
+        Image randomImage = getRandomImage(imageList);
+        return getByteDataFromImage(randomImage);
+    }
+
+    @Override
+    public List<Image> getNumOfRandomImagesFromSubBreed(String breedName, String subBreed, long num) {
+        List<Dog> dogList = dogRepository.findByBreedAndSubBreed(breedName,subBreed);
+        List<Image> imageList = getImagesFromDogList(dogList);
+        return getRandomImages(imageList,num);
+    }
+
+    @Override
+    public byte[] getRandomImageFromBreedConcat(String subBreedAndBreed) throws IOException {
+        String[] subBreedAndBreedSplit = subBreedAndBreed.split(" ");
+
+        if (subBreedAndBreedSplit.length > 1) {
+            String subBreed = subBreedAndBreedSplit[0];
+            String breed = subBreedAndBreedSplit[1];
+            return getRandomImageFromSubBreed(breed,subBreed);
+        } else {
+            String breed = subBreedAndBreedSplit[0];
+            return getRandomImageFromBreed(breed);
+        }
+    }
+
+    private List<Image> getRandomImages(List<Image> imageList,
+                                        long num) {
+        Random rand = new Random();
+        List<Image> randomImageList = new ArrayList<>();
+
+        for (long i = 0; i < num; i++) {
+            int randomIndex = rand.nextInt(imageList.size());
+            randomImageList.add(imageList.get(randomIndex));
+            imageList.remove(randomIndex);
+        }
+        return randomImageList;
+    }
+
+    private Image getRandomImage(List<Image> imageList) {
+        Random rand = new Random();
+        return imageList.get(rand.nextInt(imageList.size()));
+    }
+
+    private byte[] getByteDataFromImage(Image image) throws IOException {
+        String filePath = image.getFilePath();
+        return Files.readAllBytes(new File(filePath).toPath());
+    }
+
+    private List<Image> getImagesFromDogList(List<Dog> dogList) {
+        List<Image> imageList = new ArrayList<>();
         for (Dog dog : dogList) {
             imageList.addAll(imageRepository.findByDogId(dog.getId()));
         }
-
         return imageList;
     }
 
