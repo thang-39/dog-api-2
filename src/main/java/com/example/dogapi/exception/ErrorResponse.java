@@ -7,18 +7,19 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class ErrorResponse {
 
-    private List<String> messages;
+    private Set<String> messages;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
 
-    public ErrorResponse(List<String> messages) {
+    public ErrorResponse(Set<String> messages) {
         this.messages = messages;
         this.timestamp = LocalDateTime.now();
     }

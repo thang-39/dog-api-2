@@ -2,6 +2,7 @@ package com.example.dogapi.service;
 
 import com.example.dogapi.entity.Dog;
 import com.example.dogapi.entity.Image;
+import com.example.dogapi.exception.ImageNotFoundException;
 import com.example.dogapi.repository.DogRepository;
 import com.example.dogapi.repository.ImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 @Service
 public class ImageServiceImpl implements ImageService{
@@ -32,9 +32,9 @@ public class ImageServiceImpl implements ImageService{
     @Override
     public String saveImageToFileSystem(MultipartFile file, String dogId) throws IOException {
 
-        Long dogIdLong = Long.parseLong(dogId);
+        long dogIdLong = Long.parseLong(dogId);
 
-        Dog dog = dogRepository.findById(dogIdLong).get();
+        Dog dog = DogServiceImpl.unwrapDog(dogRepository.findById(dogIdLong),dogIdLong);
 
         String filePath = FOLDER_PATH + file.getOriginalFilename();
 
@@ -55,13 +55,13 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public byte[] getImageFromFileSystem(String imageName) throws IOException {
-        Image image = imageRepository.findByName(imageName).get();
+        Image image = unwrapImage(imageRepository.findByName(imageName),imageName);
         return getByteDataFromImage(image);
     }
 
     @Override
     public byte[] getRandomImage() throws IOException {
-        Image image = imageRepository.findRandomImage().get();
+        Image image = unwrapImage(imageRepository.findRandomImage(),"Not Found");
         return getByteDataFromImage(image);
     }
 
@@ -119,19 +119,19 @@ public class ImageServiceImpl implements ImageService{
         return getRandomImages(imageList,num);
     }
 
-    @Override
-    public byte[] getRandomImageFromBreedConcat(String subBreedAndBreed) throws IOException {
-        String[] subBreedAndBreedSplit = subBreedAndBreed.split(" ");
-
-        if (subBreedAndBreedSplit.length > 1) {
-            String subBreed = subBreedAndBreedSplit[0];
-            String breed = subBreedAndBreedSplit[1];
-            return getRandomImageFromSubBreed(breed,subBreed);
-        } else {
-            String breed = subBreedAndBreedSplit[0];
-            return getRandomImageFromBreed(breed);
-        }
-    }
+//    @Override
+//    public byte[] getRandomImageFromBreedConcat(String subBreedAndBreed) throws IOException {
+//        String[] subBreedAndBreedSplit = subBreedAndBreed.split(" ");
+//
+//        if (subBreedAndBreedSplit.length > 1) {
+//            String subBreed = subBreedAndBreedSplit[0];
+//            String breed = subBreedAndBreedSplit[1];
+//            return getRandomImageFromSubBreed(breed,subBreed);
+//        } else {
+//            String breed = subBreedAndBreedSplit[0];
+//            return getRandomImageFromBreed(breed);
+//        }
+//    }
 
     private List<Image> getRandomImages(List<Image> imageList,
                                         long num) {
@@ -162,6 +162,11 @@ public class ImageServiceImpl implements ImageService{
             imageList.addAll(imageRepository.findByDogId(dog.getId()));
         }
         return imageList;
+    }
+
+    static Image unwrapImage(Optional<Image> entity, String id) {
+        if (entity.isPresent()) return entity.get();
+        else throw new ImageNotFoundException(id);
     }
 
 

@@ -94,13 +94,13 @@ public class ImageController {
         return new ResponseEntity<>(imageList,HttpStatus.OK);
     }
 
-    @GetMapping("/get/breed/{SubBreedAndBreed}/images/random")
-    public ResponseEntity<?> getRandomImagesFromBreedConcat(@PathVariable String subBreedAndBreed) throws IOException {
-        byte[] imageData = imageService.getRandomImageFromBreedConcat(subBreedAndBreed);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/jpeg"))
-                .body(imageData);
-    }
+//    @GetMapping("/get/breed/{SubBreedAndBreed}/images/random")
+//    public ResponseEntity<?> getRandomImagesFromBreedConcat(@PathVariable String subBreedAndBreed) throws IOException {
+//        byte[] imageData = imageService.getRandomImageFromBreedConcat(subBreedAndBreed);
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .contentType(MediaType.valueOf("image/jpeg"))
+//                .body(imageData);
+//    }
 
 
 

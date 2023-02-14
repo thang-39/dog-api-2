@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,8 +20,9 @@ public class DogController {
     private DogService dogService;
 
     @PostMapping("/add")
-    public ResponseEntity<Dog> addDog (@RequestBody Dog dog) {
-        return new ResponseEntity<>(dogService.addDog(dog), HttpStatus.CREATED);
+    public ResponseEntity<?> addDog (@Valid @RequestBody Dog dog) {
+        dogService.addDog(dog);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/get/{dogId}")
@@ -36,6 +38,17 @@ public class DogController {
     @GetMapping("/get/breed/{breedName}/list")
     public ResponseEntity<Map<String,Set<String>>> getAllSubBreedsOfBreed(@PathVariable String breedName) {
         return new ResponseEntity<>(dogService.getAllSubBreedsFromBreed(breedName),HttpStatus.OK);
+    }
+
+    @PatchMapping("/edit/status/{dogId}")
+    public ResponseEntity<Dog> changeStatus(@PathVariable long dogId) {
+        return new ResponseEntity<>(dogService.changeStatus(dogId),HttpStatus.OK);
+    }
+
+    @PutMapping("/edit/{dogId}")
+    public ResponseEntity<Dog> updateDog(@PathVariable long dogId,
+                                         @Valid @RequestBody Dog dog) {
+        return new ResponseEntity<>(dogService.updateDog(dogId,dog),HttpStatus.OK);
     }
 
 }
