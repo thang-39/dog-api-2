@@ -61,23 +61,17 @@ public class DogServiceImpl implements DogService {
         return breedAndSubBreed;
     }
 
-    // how to handle when have no breed
+    // when have no subBreed
     @Override
-    public Map<String,Set<String>> getAllSubBreedsFromBreed(String breedName) {
+    public Set<String> getAllSubBreedsFromBreed(String breedName) {
 
-        Map<String,Set<String>> subBreedsList = new HashMap<>();
-        subBreedsList.put(breedName,new HashSet<>());
+        Set<String> subBreedsList = new HashSet<>();
 
         List<Dog> dogList = dogRepository.findByBreed(breedName);
 
-        if (dogList.isEmpty()) {
-            subBreedsList.get(breedName).add("Breed is not available");
-            return subBreedsList;
-        }
-
         for (Dog dog : dogList) {
-            if (dog.getBreed().equals(breedName)) {
-                subBreedsList.get(breedName).add(dog.getSubBreed());
+            if (dog.getSubBreed() != null) {
+                subBreedsList.add(dog.getSubBreed());
             }
         }
         return subBreedsList;
@@ -87,8 +81,7 @@ public class DogServiceImpl implements DogService {
     public Dog changeStatus(long dogId) {
         Dog dog = unwrapDog(dogRepository.findById(dogId),dogId);
         dog.setActive(!dog.isActive());
-        dogRepository.save(dog);
-        return dog;
+        return dogRepository.save(dog);
     }
 
     @Override
@@ -103,8 +96,7 @@ public class DogServiceImpl implements DogService {
         dogInRepo.setBirthDate(dog.getBirthDate());
         dogInRepo.setActive(dog.isActive());
 
-        dogInRepo = dogRepository.save(dogInRepo);
-        return dogInRepo;
+        return dogRepository.save(dogInRepo);
     }
 
     static Dog unwrapDog(Optional<Dog> entity, long dogId) {

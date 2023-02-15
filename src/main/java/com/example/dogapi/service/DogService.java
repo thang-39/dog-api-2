@@ -16,7 +16,7 @@ public interface DogService {
 
     Map<String, Set<String>> getBreedAndSubBreed();
 
-    Map<String, Set<String>> getAllSubBreedsFromBreed(String breedName);
+    Set<String> getAllSubBreedsFromBreed(String breedName);
 
     Dog changeStatus(long dogId);
 

@@ -47,10 +47,7 @@ public class ImageServiceImpl implements ImageService{
 
         file.transferTo(new File(filePath));
 
-        if (image != null) {
-            return "file uploaded successfully: " + filePath;
-        }
-        return null;
+        return "file uploaded successfully: " + filePath;
     }
 
     @Override

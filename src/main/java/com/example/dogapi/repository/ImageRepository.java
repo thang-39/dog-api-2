@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ImageRepository extends JpaRepository<Image,String> {
     Optional<Image> findByName(String imageName);
+    Optional<Image> findByFilePath(String filePath);
     List<Image> findByDogId(long dogId);
 
     @Query(value = "SELECT * FROM image ORDER BY RAND() LIMIT 1", nativeQuery = true)

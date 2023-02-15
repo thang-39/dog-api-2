@@ -36,7 +36,7 @@ public class DogController {
     }
 
     @GetMapping("/get/breed/{breedName}/list")
-    public ResponseEntity<Map<String,Set<String>>> getAllSubBreedsOfBreed(@PathVariable String breedName) {
+    public ResponseEntity<Set<String>> getAllSubBreedsOfBreed(@PathVariable String breedName) {
         return new ResponseEntity<>(dogService.getAllSubBreedsFromBreed(breedName),HttpStatus.OK);
     }
 
