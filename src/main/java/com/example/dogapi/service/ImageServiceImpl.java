@@ -5,6 +5,7 @@ import com.example.dogapi.entity.Image;
 import com.example.dogapi.exception.ImageNotFoundException;
 import com.example.dogapi.repository.DogRepository;
 import com.example.dogapi.repository.ImageRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,9 +45,7 @@ public class ImageServiceImpl implements ImageService{
                         .filePath(filePath)
                         .dog(dog)
                 .build());
-
         file.transferTo(new File(filePath));
-
         return "file uploaded successfully: " + filePath;
     }
 

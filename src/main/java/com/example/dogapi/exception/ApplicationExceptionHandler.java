@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 @ControllerAdvice
@@ -19,6 +21,12 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     public ResponseEntity<Object> handleResourceNotFoundException(RuntimeException ex) {
         ErrorResponse errorResponse = new ErrorResponse(Set.of(ex.getMessage()));
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<Object> handleFileNotFoundException(IOException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(Set.of("Image File Input Not Found"));
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -33,4 +41,6 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
         ErrorResponse errorResponse = new ErrorResponse(errors);
         return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
     }
+
+
 }

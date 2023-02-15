@@ -78,6 +78,28 @@ class ImageServiceImplTest {
     }
 
     @Test
+    void whenUploadNoFile_thenThrowIOException() throws IOException {
+        Dog dog = Dog.builder()
+                .id(1L)
+                .name("thang")
+                .breed("bulldog")
+                .subBreed("boston")
+                .birthDate(LocalDate.now())
+                .description("tram cam")
+                .isActive(true)
+                .location("HCM")
+                .build();
+        when(dogRepository.findById(anyLong())).thenReturn(Optional.ofNullable(dog));
+
+        MockMultipartFile emptyFile = new MockMultipartFile(
+                "file",
+                "",
+                "",new byte[]{});
+
+        assertThrows(IOException.class,() -> imageService.saveImageToFileSystem(emptyFile,"1"));
+    }
+
+    @Test
     void getImageFromFileSystem() throws IOException {
         Dog dog = Dog.builder()
                 .id(1L)
