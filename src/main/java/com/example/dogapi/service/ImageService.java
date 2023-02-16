@@ -25,5 +25,7 @@ public interface ImageService {
 
     List<Image> getNumOfRandomImagesFromSubBreed(String breedName, String subBreed, long num);
 
+    void deleteImage(String imageId);
+
 //    byte[] getRandomImageFromBreedConcat(String subBreedAndBreed) throws IOException;
 }

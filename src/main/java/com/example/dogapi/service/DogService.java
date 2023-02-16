@@ -21,4 +21,6 @@ public interface DogService {
     Dog changeStatus(long dogId);
 
     Dog updateDog(long dogId, Dog dog);
+
+    void deleteDog(long dogId);
 }

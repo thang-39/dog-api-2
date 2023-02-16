@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.security.RolesAllowed;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+    @RolesAllowed({"Admin"})
     @PostMapping(value = "/add", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,
                                              MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<String> saveImage(@RequestPart("file") MultipartFile file,
@@ -92,6 +94,13 @@ public class ImageController {
                                                                         @PathVariable long num) {
         List<Image> imageList = imageService.getNumOfRandomImagesFromSubBreed(breedName,subBreed,num);
         return new ResponseEntity<>(imageList,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{imageId}")
+    @RolesAllowed({"Admin"})
+    public ResponseEntity<HttpStatus> deleteImage(@PathVariable String imageId) {
+        imageService.deleteImage(imageId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 //    @GetMapping("/get/breed/{SubBreedAndBreed}/images/random")

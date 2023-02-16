@@ -37,14 +37,6 @@ class ImageServiceImplTest {
     @InjectMocks
     private ImageServiceImpl imageService;
 
-    private final byte[] data = new byte[]{1,2,3};
-
-    private final MockMultipartFile file = new MockMultipartFile(
-            "file",
-            "3.jpg",
-            "image/jpeg",
-            data);
-
     @Test
     void saveImageToFileSystem() throws IOException {
         Dog dog = Dog.builder()
@@ -70,6 +62,13 @@ class ImageServiceImplTest {
         when(imageRepository.save(any(Image.class))).thenReturn(image);
 
         //Act
+        byte[] data = new byte[]{1,2,3};
+
+        MockMultipartFile file = new MockMultipartFile(
+                "file",
+                "3.jpg",
+                "image/jpeg",
+                data);
         String actualReturn = imageService.saveImageToFileSystem(file,"1");
 
         //Assert
@@ -545,5 +544,30 @@ class ImageServiceImplTest {
 
         //Assert
         assertEquals(1,actualImageList.size());
+    }
+
+    @Test
+    public void whenValidImageId_thenDeleteImageSuccessfully() {
+        Dog dog4 = Dog.builder()
+                .id(4L)
+                .name("lex")
+                .breed("bulldog")
+                .subBreed("boston")
+                .birthDate(LocalDate.now())
+                .description("tram cam")
+                .isActive(true)
+                .location("Nga")
+//                .images(Arrays.asList(image))
+                .build();
+        Image image4 = Image.builder()
+                .id("4")
+                .name("4.jpg")
+                .type("image/jpeg")
+                .filePath("./src/main/resources/static/image/4.jpg")
+                .dog(dog4)
+                .build();
+
+        imageService.deleteImage(image4.getId());
+        verify(imageRepository,times(1)).deleteById(anyString());
     }
 }

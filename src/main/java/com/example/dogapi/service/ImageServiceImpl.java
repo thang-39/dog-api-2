@@ -2,6 +2,8 @@ package com.example.dogapi.service;
 
 import com.example.dogapi.entity.Dog;
 import com.example.dogapi.entity.Image;
+import com.example.dogapi.exception.BreedNotFoundException;
+import com.example.dogapi.exception.BreedOrSubBreedNotFoundException;
 import com.example.dogapi.exception.ImageNotFoundException;
 import com.example.dogapi.repository.DogRepository;
 import com.example.dogapi.repository.ImageRepository;
@@ -64,6 +66,9 @@ public class ImageServiceImpl implements ImageService{
     @Override
     public List<Image> getImagesFromBreed(String breedName) {
         List<Dog> dogList = dogRepository.findByBreed(breedName);
+        if (dogList.isEmpty()) {
+            throw new BreedNotFoundException(breedName);
+        }
         return getImagesFromDogList(dogList);
     }
 
@@ -96,13 +101,13 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public List<Image> getImagesFromSubBreed(String breedName, String subBreed) {
-        List<Dog> dogList = dogRepository.findByBreedAndSubBreed(breedName,subBreed);
+        List<Dog> dogList = getDogListFromBreedAndSubBreed(breedName,subBreed);
         return getImagesFromDogList(dogList);
     }
 
     @Override
     public byte[] getRandomImageFromSubBreed(String breedName, String subBreed) throws IOException {
-        List<Dog> dogList = dogRepository.findByBreedAndSubBreed(breedName,subBreed);
+        List<Dog> dogList = getDogListFromBreedAndSubBreed(breedName,subBreed);
         List<Image> imageList = getImagesFromDogList(dogList);
         Image randomImage = getRandomImage(imageList);
         return getByteDataFromImage(randomImage);
@@ -110,12 +115,17 @@ public class ImageServiceImpl implements ImageService{
 
     @Override
     public List<Image> getNumOfRandomImagesFromSubBreed(String breedName, String subBreed, long num) {
-        List<Dog> dogList = dogRepository.findByBreedAndSubBreed(breedName,subBreed);
+        List<Dog> dogList = getDogListFromBreedAndSubBreed(breedName,subBreed);
         List<Image> imageList = getImagesFromDogList(dogList);
         return getRandomImages(imageList,num);
     }
 
-//    @Override
+    @Override
+    public void deleteImage(String imageId) {
+        imageRepository.deleteById(imageId);
+    }
+
+    //    @Override
 //    public byte[] getRandomImageFromBreedConcat(String subBreedAndBreed) throws IOException {
 //        String[] subBreedAndBreedSplit = subBreedAndBreed.split(" ");
 //
@@ -129,8 +139,17 @@ public class ImageServiceImpl implements ImageService{
 //        }
 //    }
 
+    private List<Dog> getDogListFromBreedAndSubBreed(String breedName, String subBreed) {
+        List<Dog> dogList = dogRepository.findByBreedAndSubBreed(breedName,subBreed);
+        if (dogList.isEmpty()) {
+            throw new BreedOrSubBreedNotFoundException(breedName,subBreed);
+        }
+        return dogList;
+    }
+
     private List<Image> getRandomImages(List<Image> imageList,
                                         long num) {
+
         Random rand = new Random();
         List<Image> randomImageList = new ArrayList<>();
 

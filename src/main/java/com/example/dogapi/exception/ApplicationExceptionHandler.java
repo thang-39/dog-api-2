@@ -1,5 +1,6 @@
 package com.example.dogapi.exception;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,10 @@ import java.util.*;
 @ControllerAdvice
 public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({ImageNotFoundException.class, DogNotFoundException.class})
+    @ExceptionHandler({ImageNotFoundException.class,
+            DogNotFoundException.class,
+            BreedNotFoundException.class,
+            BreedOrSubBreedNotFoundException.class})
     public ResponseEntity<Object> handleResourceNotFoundException(RuntimeException ex) {
         ErrorResponse errorResponse = new ErrorResponse(Set.of(ex.getMessage()));
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -26,6 +30,18 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<Object> handleFileNotFoundException(IOException ex) {
         ErrorResponse errorResponse = new ErrorResponse(Set.of("Image File Input Not Found"));
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(Set.of("Requested number is greater than number of images in our record"));
+        return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(Set.of("Can not delete non-existing resource"));
         return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
     }
 

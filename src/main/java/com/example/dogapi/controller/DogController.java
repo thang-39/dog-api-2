@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,9 @@ public class DogController {
     private DogService dogService;
 
     @PostMapping("/add")
+    @RolesAllowed({"Admin"})
     public ResponseEntity<?> addDog (@Valid @RequestBody Dog dog) {
-        dogService.addDog(dog);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(dogService.addDog(dog),HttpStatus.CREATED);
     }
 
     @GetMapping("/get/{dogId}")
@@ -41,14 +42,23 @@ public class DogController {
     }
 
     @PatchMapping("/edit/status/{dogId}")
+    @RolesAllowed({"Admin"})
     public ResponseEntity<Dog> changeStatus(@PathVariable long dogId) {
         return new ResponseEntity<>(dogService.changeStatus(dogId),HttpStatus.OK);
     }
 
     @PutMapping("/edit/{dogId}")
+    @RolesAllowed({"Admin"})
     public ResponseEntity<Dog> updateDog(@PathVariable long dogId,
                                          @Valid @RequestBody Dog dog) {
         return new ResponseEntity<>(dogService.updateDog(dogId,dog),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{dogId}")
+    @RolesAllowed({"Admin"})
+    public ResponseEntity<HttpStatus> deleteDog(@PathVariable long dogId) {
+        dogService.deleteDog(dogId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

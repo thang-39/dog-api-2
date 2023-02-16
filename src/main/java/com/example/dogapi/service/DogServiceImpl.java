@@ -1,6 +1,7 @@
 package com.example.dogapi.service;
 
 import com.example.dogapi.entity.Dog;
+import com.example.dogapi.exception.BreedNotFoundException;
 import com.example.dogapi.exception.DogNotFoundException;
 import com.example.dogapi.repository.DogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,9 @@ public class DogServiceImpl implements DogService {
         Set<String> subBreedsList = new HashSet<>();
 
         List<Dog> dogList = dogRepository.findByBreed(breedName);
+        if (dogList.isEmpty()) {
+            throw new BreedNotFoundException(breedName);
+        }
 
         for (Dog dog : dogList) {
             if (dog.getSubBreed() != null) {
@@ -97,6 +101,11 @@ public class DogServiceImpl implements DogService {
         dogInRepo.setActive(dog.isActive());
 
         return dogRepository.save(dogInRepo);
+    }
+
+    @Override
+    public void deleteDog(long dogId) {
+        dogRepository.deleteById(dogId);
     }
 
     static Dog unwrapDog(Optional<Dog> entity, long dogId) {

@@ -337,9 +337,22 @@ class DogServiceImplTest {
 
         //Assert
         assertEquals("rightName",actualDog.getName());
+    }
 
-
-
-
+    @Test
+    public void whenValidDogId_thenDeleteDogSuccessfully() {
+        Dog dog4 = Dog.builder()
+                .id(4L)
+                .name("wrongName")
+                .breed("akita")
+//                .subBreed("english")
+                .birthDate(LocalDate.now())
+                .description("tram cam")
+                .isActive(true)
+                .location("Nga")
+//                .images(Arrays.asList(image))
+                .build();
+        dogService.deleteDog(dog4.getId());
+        verify(dogRepository,times(1)).deleteById(dog4.getId());
     }
 }
