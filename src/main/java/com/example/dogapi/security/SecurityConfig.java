@@ -50,8 +50,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter
     {
         super.configure(http);
         http
-//                .headers().frameOptions().disable()
-//                .and()
+                .headers().frameOptions().disable()
+                .and()
                 .csrf().disable()
                 .authorizeRequests()
 //                .antMatchers("/h2/**").permitAll()
