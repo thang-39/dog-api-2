@@ -10,8 +10,8 @@ spring:
 cloud:
   aws:
     credentials:
-      access-key: AKIASBOBKFWRNL5N66BW
-      secret-key: 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
+      access-key: 
+      secret-key: 
     region:
       static: ap-southeast-1
     stack:
